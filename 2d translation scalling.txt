@@ -1,0 +1,95 @@
+#include <iostream>
+#include <GL/glut.h>
+#include <vector>
+
+using namespace std;
+
+int edge;
+vector<int> xpoint;
+vector<int> ypoint;
+int ch;
+
+void init() {
+    glClearColor(1.0, 1.0, 1.0, 0.0);
+    glMatrixMode(GL_PROJECTION);
+    gluOrtho2D(0, 640, 0, 480);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void scale() {
+    int sx, sy;
+    cout << "Enter scaling factors (sx sy): ";
+    cin >> sx >> sy;
+
+    for (int i = 0; i < edge; i++) {
+        xpoint[i] *= sx;
+        ypoint[i] *= sy;
+    }
+
+    glColor3f(0, 0, 1.0);
+    glBegin(GL_POLYGON);
+    for (int i = 0; i < edge; i++) {
+        glVertex2i(xpoint[i], ypoint[i]);
+    }
+    glEnd();
+    glFlush();
+}
+
+void translate() {
+    int tx, ty;
+    cout << "Enter translation factors (tx ty): ";
+    cin >> tx >> ty;
+
+    for (int i = 0; i < edge; i++) {
+        xpoint[i] += tx;
+        ypoint[i] += ty;
+    }
+
+    glColor3f(0, 0, 1.0);
+    glBegin(GL_POLYGON);
+    for (int i = 0; i < edge; i++) {
+        glVertex2i(xpoint[i], ypoint[i]);
+    }
+    glEnd();
+    glFlush();
+}
+
+void Draw() {
+    if (ch == 1) {
+        scale();
+    } else if (ch == 2) {
+        translate();
+    }
+}
+
+int main(int argc, char** argv) {
+    cout << "Enter 1 for Scaling or 2 for Translation: ";
+    cin >> ch;
+
+    if (ch == 1 || ch == 2) {
+        cout << "Enter the number of edges: ";
+        cin >> edge;
+
+        int xpointnew, ypointnew;
+        cout << "Enter " << edge << " points of the polygon:\n";
+        for (int i = 0; i < edge; i++) {
+            cout << "Enter Point " << i << ": ";
+            cin >> xpointnew >> ypointnew;
+            xpoint.push_back(xpointnew);
+            ypoint.push_back(ypointnew);
+        }
+
+        glutInit(&argc, argv);
+        glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+        glutInitWindowSize(640, 480);
+        glutInitWindowPosition(200, 200);
+        glutCreateWindow("2D Scaling and Translation");
+        init();
+        glutDisplayFunc(Draw);
+        glutMainLoop();
+        return 0;
+    } else {
+        cout << "\nInvalid input. Please run again and choose option 1 or 2.\n";
+        return 0;
+    }
+}
